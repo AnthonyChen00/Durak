@@ -25,11 +25,39 @@ The defender attempts to beat the attack card by playing a higher-ranking defend
 ## Current Progress:
 Checkmark  | Goal
 --- | -----------------------
-x | Rough block diagram of game loop
-o| text based prototype of logic
+Done | Rough block diagram of game loop
+WIP| text based prototype of logic
 o | Implement basic window/application, base classes
 o | Socket Programming: creating a host and client o | programs and perspective communication
 o | UI, maybe a menu screen(?)
+o | AI???? - super unlikely
 
 ### Block diagram of game
 ![:)](https://github.com/AnthonyChen00/Durak/blob/master/assets/workflow.png)
+
+### Small example of text based prototype
+To interact with this: run debuger.py
+python3 debuger.py
+```
+Select card from...
+3 - | 4 ♥|
+16 - | 4 ♣|
+29 - | 4 ♠|
+===============
+3
+Do you wish to add: 16 - | 4 ♣| ? (y/n)n
+Did not add
+Do you wish to add: 29 - | 4 ♠| ? (y/n)n
+Did not add
+Cards that are currently attacking P0:
+6 - | 7 ♥|
+7 - | 8 ♥|
+8 - | 9 ♥|
+===============
+Cards in your hand
+3 - | 4 ♥|
+16 - | 4 ♣|
+29 - | 4 ♠|
+===============
+which card do you want to defend with from 6 - | 7 ♥|
+```
