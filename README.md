@@ -23,4 +23,8 @@ The defender attempts to beat the attack card by playing a higher-ranking defend
 **NOTE** Defender may play a card of the same rank to "deflect" the initial attack and shift the attack into the next player.
 
 ## Current Progress:
-[ ] - Implement basic window/application, main game loop, game states, and turns.
+[x] - Rough block diagram of game loop
+[ ] - text based prototype of logic
+[ ] - Implement basic window/application, base classes
+[ ] - Socket Programming: creating a host and client programs and perspective communication
+[ ] - UI, maybe a menu screen(?)
