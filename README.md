@@ -19,7 +19,9 @@ For example: attacker attacks with 4 of Hearts
 **NOTE:** There may not be a higher number of cards in the attack compared to the number of cards in the hand of the defender. For example, if the defender has 4 cards in their hand, the maximum number of cards in the attack is 4 cards.
 #### Defend
 The defender attempts to beat the attack card by playing a higher-ranking defending card from their hand. For example, if the attacker plays an 8 of Spades the defender must play a higher Spades such as the 10 of Spades or a card from the trump suit to defend successfully.  However all other players may increase the attack with cards played by the defender (refer to attack section).
+
 **NOTE:** Defender has to successfully block all cards or else they take all the cards of the attack into their hand
+
 **NOTE** Defender may play a card of the same rank to "deflect" the initial attack and shift the attack into the next player.
 
 ## Current Progress:
@@ -28,8 +30,9 @@ Checkmark  | Goal
 Done | Rough block diagram of game loop
 WIP| text based prototype of logic
 o | Implement basic window/application, base classes
-o | Socket Programming: creating a host and client o | programs and perspective communication
+o | Socket Programming: creating a host and client programs and perspective communication
 o | UI, maybe a menu screen(?)
+o | animations??? - super unlikely
 o | AI???? - super unlikely
 
 ### Block diagram of game
@@ -37,27 +40,7 @@ o | AI???? - super unlikely
 
 ### Small example of text based prototype
 To interact with this: run debuger.py
-python3 debuger.py
+>python3 debuger.py
 ```
-Select card from...
-3 - | 4 ♥|
-16 - | 4 ♣|
-29 - | 4 ♠|
-===============
-3
-Do you wish to add: 16 - | 4 ♣| ? (y/n)n
-Did not add
-Do you wish to add: 29 - | 4 ♠| ? (y/n)n
-Did not add
-Cards that are currently attacking P0:
-6 - | 7 ♥|
-7 - | 8 ♥|
-8 - | 9 ♥|
-===============
-Cards in your hand
-3 - | 4 ♥|
-16 - | 4 ♣|
-29 - | 4 ♠|
-===============
-which card do you want to defend with from 6 - | 7 ♥|
+
 ```
