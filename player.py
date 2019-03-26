@@ -18,7 +18,9 @@ class Player:
     def addHand(self,newCard):
         """Adds a card into players hand - used for the drawing functions"""
         """newCard currently accepted as int, will change to card class"""
-        if type(newCard) == int: #temp: need to change into class cards
+        if type(newCard) == int:
+            if newCard < 0 or newCard > 51:
+                Error("Attempt to add card out of range")
             self.currentHand.append(newCard)
         else:
             Error("newCard incorrect type")
@@ -83,18 +85,43 @@ class Player:
             Error("Incorrect amount of targets")
         defendStatus = False
         discardCards = []
+        forfeit = False
         if self.AI:
             Error("AI not yet implemented for defending")
         else:
             print("Cards that are currently attacking P" + str(self.playerid) + ":")
-            cardManager.printHand(targets)
-            print("Cards in your hand")
+            cardManager.printNon(targets)
+            print("Cards in P" + str(self.playerid) + " hand to defend with:")
             cardManager.printHand(self.currentHand)
-            for attacker in targets: # iterate thru all attackers
-                defendCard = int(input("which card do you want to defend with from {:d} - | {:s} {:s} |?".format(attacker,cardManager.card_rank[attacker],cardManager.card_suit_symbol[attacker])))
-                while defendCard not in self.currentHand: # input checking
-                    defendCard = int(input("which card do you want to defend with?"))
-                # check if defenderCard is larger
-                # if not, ask if defender wants to give up or choose larger card
+            for attackCard in targets: # iterate thru all attackers
+                validDefend = False
+                while validDefend == False and forfeit == False:
+                    print("which card do you want to defend with from:" , end=" ")
+                    cardManager.printNon([attackCard])
+                    defendCard = int(input())
+                    while defendCard not in self.currentHand: # input checking
+                        defendCard = int(input("which card do you want to defend with?"))
+                    # check if defenderCard is larger/ choose new card or give up
+                    validDefend = cardManager.compare(defendCard,attackCard)
+                    if validDefend == False:
+                        print("Failed defense...")
+                        prompt = input("Do you wish to give up defense? (y/n)")
+                        while prompt != "y" and prompt != 'n': # input checking
+                            prompt = input("Do you wish to give up defense? (y/n)")
+                        if prompt == 'y':
+                            forfeit = True
+                            print(forfeit)
+                            break           
+                if forfeit:
+                    break
+                # print("valid defend!")
+                # self.currentHand.remove(defenderCard)
+                # discardCards.append(defenderCard)
+                # discardCards.append(attackCard)
+                #
+            #results handling:
+        if forfeit:
+            print("3 - GIVE UP!")
+
 
         return discardCards

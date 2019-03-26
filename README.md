@@ -24,7 +24,7 @@ The defender attempts to beat the attack card by playing a higher-ranking defend
 
 **NOTE** Defender may play a card of the same rank to "deflect" the initial attack and shift the attack into the next player.
 
-## Current Progress:
+## [Current Progress](https://trello.com/b/8bwXfL5C/personal-ideas):
 Checkmark  | Goal
 --- | -----------------------
 Done | Rough block diagram of game loop
