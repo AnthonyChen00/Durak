@@ -39,8 +39,21 @@ o | AI???? - super unlikely
 ![:)](https://github.com/AnthonyChen00/Durak/blob/master/assets/workflow.png)
 
 ### Small example of text based prototype
-To interact with this: run debuger.py
+Creates a hand with 3 of the same ranking cards and informs user to select card to attack with
 >python3 debuger.py
 ```
-
+Select card from...
+ 3 - | 4 ♥|
+16 - | 4 ♣|
+29 - | 4 ♠|
+to your attack: 3
+Do you wish to add:
+16 - | 4 ♣|
+to your attack? (y/n):y
+added
+Do you wish to add:
+29 - | 4 ♠|
+to your attack? (y/n):y
+added
+Attacking with:  | 4 ♥| | 4 ♣| | 4 ♠|
 ```
