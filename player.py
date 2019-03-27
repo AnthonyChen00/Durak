@@ -62,11 +62,11 @@ class Player:
                 else:
                     print("Did not add")
             if card_minus in self.currentHand and card_minus > 0 and card_plus != card and card_minus not in multipleCards:
-                prompt = input("Do you wish to add:")
+                print("Do you wish to add:")
                 cardManager.printHand([card_minus])
                 prompt = input("to your attack? (y/n):")
                 while prompt != 'y' and prompt != 'n': # input checking
-                    prompt = input("Do you wish to add:")
+                    print("Do you wish to add:")
                     cardManager.printHand([card_minus])
                     prompt = input("to your attack? (y/n):")
                 if prompt == 'y':
@@ -76,15 +76,15 @@ class Player:
                     print("Did not add")
         return multipleCards
 
-    def defend(self,targets):
+    def defend(self,targets): # need to add defending with same ranking card
         """Will handle the entire players defend phase, inputs is all the cards being attacked with
         and the defender must handle all of them"""
         """Accept targets as a list"""
         """Return list - discardCards (if 0 means defender accepts all the cards)"""
         if len(self.currentHand) < len(targets): #Goes against the rules of the game
             Error("Incorrect amount of targets")
-        defendStatus = False
         discardCards = []
+        defendHand = []
         forfeit = False
         if self.AI:
             Error("AI not yet implemented for defending")
@@ -95,6 +95,7 @@ class Player:
             cardManager.printHand(self.currentHand)
             for attackCard in targets: # iterate thru all attackers
                 validDefend = False
+                defendCard = 0
                 while validDefend == False and forfeit == False:
                     print("which card do you want to defend with from:" , end=" ")
                     cardManager.printNon([attackCard])
@@ -110,18 +111,22 @@ class Player:
                             prompt = input("Do you wish to give up defense? (y/n)")
                         if prompt == 'y':
                             forfeit = True
-                            print(forfeit)
-                            break           
+                            break
+                    else:
+                        print("valid defend!")
+                        self.currentHand.remove(defendCard)
+                        defendHand.append(defendCard)
+                        discardCards.append(defendCard)
+                        discardCards.append(attackCard)
                 if forfeit:
                     break
-                # print("valid defend!")
-                # self.currentHand.remove(defenderCard)
-                # discardCards.append(defenderCard)
-                # discardCards.append(attackCard)
-                #
-            #results handling:
+        #results handling:
         if forfeit:
-            print("3 - GIVE UP!")
-
-
-        return discardCards
+            for card in discardCards:
+                self.currentHand.append(card)
+            for card in targets:
+                if card not in self.currentHand:
+                    self.currentHand.append(card)
+            discardCards.clear()
+            defendHand.clear()
+        return discardCards, defendHand

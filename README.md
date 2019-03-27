@@ -39,8 +39,12 @@ o | AI???? - super unlikely
 ![:)](https://github.com/AnthonyChen00/Durak/blob/master/assets/workflow.png)
 
 ### Small example of text based prototype
-Creates a hand with 3 of the same ranking cards and informs user to select card to attack with
+Current examples of code:
+* Attacking and Defending
+* Introduction & rules
+
 >python3 debuger.py
+
 ```
 Select card from...
  3 - | 4 ♥|
@@ -56,4 +60,38 @@ Do you wish to add:
 to your attack? (y/n):y
 added
 Attacking with:  | 4 ♥| | 4 ♣| | 4 ♠|
+```
+
+```
+.------..------..------..------..------.
+|D.--. ||U.--. ||R.--. ||A.--. ||K.--. |
+| :/\: || (\/) || :(): || (\/) || :/\: |
+| (__) || :\/: || ()() || :\/: || :\/: |
+| '--'D|| '--'U|| '--'R|| '--'A|| '--'K|
+`------'`------'`------'`------'`------'
+
+Text version of the Traditional Russian Card Game, Durak
+Current version: 2 player
+Do you wish to read the rules? (y/n): y
+============================================================
+Every card has a unique index 0 - 51...
+inputs will ask for the unique card index
+for example: 0 - | 1 ♥ |, the one of Hearts has an id of 0
+Do you wish to repeat? (y/n): n
+============================================================
+Two players: 1 attacker and 1 defender
+Attackers select a card from hand, may attack with multiple
+of the same rank
+Defender must block with a higher ranking card or a card of trump suit
+If defender is successful, the positions are swapped
+If defender is unsuccessful, the attacker may attack again
+Do you wish to repeat? (y/n): n
+
+
+
+
+
+
+====================Initializing deck========================
+
 ```
