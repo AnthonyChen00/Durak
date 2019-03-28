@@ -8,18 +8,10 @@ import gamestate as GS
 # for i in range (3):
 #     test1.addHand(3 + 13*i)
 #     test2.addHand(4 + 13*i)
-#
-#
-# # test1.printHand()
-# attackHand = test1.attack()
-# # # print("Attacking with: ", end=" ")
-# # cardManager.printNon(attackHand)
-# print("--")
-# print("NEXT TURN")
-# print("--")
-# print(test2.defend(attackHand))
-# print("Current hand of test2: ", end = " ")
-# cardManager.printNon(test2.currentHand)
+# #
+# attackCards = test1.attack()
+# d
+
 """########==========#########"""
 
 """testing card functions """
@@ -31,6 +23,9 @@ import gamestate as GS
 #
 
 # print(cardManager.compare(0,12))
+# cardManager.printNon([27,28,29])
+# cardManager.printNon([14,15,16])
+# print(cardManager.check([27,28,29],[14,15,16]))
 
 """########==========#########"""
 """Testing game states"""

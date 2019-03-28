@@ -46,52 +46,59 @@ Current examples of code:
 >python3 debuger.py
 
 ```
-Select card from...
- 3 - | 4 ♥|
-16 - | 4 ♣|
-29 - | 4 ♠|
-to your attack: 3
-Do you wish to add:
-16 - | 4 ♣|
-to your attack? (y/n):y
-added
-Do you wish to add:
-29 - | 4 ♠|
-to your attack? (y/n):y
-added
-Attacking with:  | 4 ♥| | 4 ♣| | 4 ♠|
-```
 
-```
-.------..------..------..------..------.
-|D.--. ||U.--. ||R.--. ||A.--. ||K.--. |
-| :/\: || (\/) || :(): || (\/) || :/\: |
-| (__) || :\/: || ()() || :\/: || :\/: |
-| '--'D|| '--'U|| '--'R|| '--'A|| '--'K|
-`------'`------'`------'`------'`------'
+        .------..------..------..------..------.
+        |D.--. ||U.--. ||R.--. ||A.--. ||K.--. |
+        | :/\: || (\/) || :(): || (\/) || :/\: |
+        | (__) || :\/: || ()() || :\/: || :\/: |
+        | '--'D|| '--'U|| '--'R|| '--'A|| '--'K|
+        `------'`------'`------'`------'`------'
 
 Text version of the Traditional Russian Card Game, Durak
 Current version: 2 player
-Do you wish to read the rules? (y/n): y
-============================================================
-Every card has a unique index 0 - 51...
-inputs will ask for the unique card index
-for example: 0 - | 1 ♥ |, the one of Hearts has an id of 0
-Do you wish to repeat? (y/n): n
-============================================================
-Two players: 1 attacker and 1 defender
-Attackers select a card from hand, may attack with multiple
-of the same rank
-Defender must block with a higher ranking card or a card of trump suit
-If defender is successful, the positions are swapped
-If defender is unsuccessful, the attacker may attack again
-Do you wish to repeat? (y/n): n
+Do you wish to read the rules? (y/n): n
 
 
 
 
 
 
-====================Initializing deck========================
+===================Initializing Game=======================
 
+=======Player 0 turn=======
+Select card from...
+ 1 - | 2 ♥ |
+14 - | 2 ♣ |
+ 3 - | 4 ♥ |
+26 - | 1 ♠ |
+15 - | 3 ♣ |
+40 - | 2 ♦ |
+to your attack: 1
+Do you wish to add:
+14 - | 2 ♣ |
+to your attack? (y/n):n
+Did not add
+Do you wish to add:
+40 - | 2 ♦ |
+to your attack? (y/n):n
+Did not add
+=======Player 1 turn=======
+Cards that are currently attacking P1:
+| 2 ♥ |
+Cards in P1 hand to defend with:
+13 - | 1 ♣ |
+ 2 - | 3 ♥ |
+30 - | 5 ♠ |
+16 - | 4 ♣ |
+44 - | 6 ♦ |
+38 - | A ♠ |
+which card do you want to defend with from: | 2 ♥ |
+4
+which card do you want to defend with?5
+which card do you want to defend with?2
+valid defend!
+=======Player 0 turn=======
+Attack was blocked, Current avaiable attack-able cards:
+| 2 ♣ | | 3 ♣ | | 2 ♦ |
+Do you wish to continue your attack? (y/n)n
 ```

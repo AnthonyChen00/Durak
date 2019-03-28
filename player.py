@@ -39,6 +39,7 @@ class Player:
                 print("Please select a valid card from...", end = " ")
                 cardManager.printHand(self.currentHand)
                 card = int(input())
+            self.currentHand.remove(card)
             card = self.checkDoubles(card)
             return card
 
@@ -59,6 +60,7 @@ class Player:
                 if prompt == 'y':
                     print("added")
                     multipleCards.append(card_plus)
+                    self.currentHand.remove(card_plus)
                 else:
                     print("Did not add")
             if card_minus in self.currentHand and card_minus > 0 and card_plus != card and card_minus not in multipleCards:
@@ -72,19 +74,33 @@ class Player:
                 if prompt == 'y':
                     print("added")
                     multipleCards.append(card_minus)
+                    self.currentHand.remove(card_minus)
                 else:
                     print("Did not add")
         return multipleCards
 
-    def defend(self,targets): # need to add defending with same ranking card
+    def followUpAttack(self, validCards):
+        """Attack was successfully blocked and attack wishes to attack more"""
+        print("Select card from... ")
+        cardManager.printHand(validCards)
+        card = int(input("to your attack: "))
+        while card not in validCards: # error checking
+            print(card)
+            print("Please select a valid card from...")
+            cardManager.printHand(validCards)
+            card = int(input("to your attack: "))
+        self.currentHand.remove(card)
+        card = self.checkDoubles(card)
+        return card
+
+    def followUpDefend(self,targets,discardPile): # need to add defending with same ranking card
         """Will handle the entire players defend phase, inputs is all the cards being attacked with
         and the defender must handle all of them"""
         """Accept targets as a list"""
         """Return list - discardCards (if 0 means defender accepts all the cards)"""
         if len(self.currentHand) < len(targets): #Goes against the rules of the game
             Error("Incorrect amount of targets")
-        discardCards = []
-        defendHand = []
+        discardCards = discardPile
         forfeit = False
         if self.AI:
             Error("AI not yet implemented for defending")
@@ -115,7 +131,6 @@ class Player:
                     else:
                         print("valid defend!")
                         self.currentHand.remove(defendCard)
-                        defendHand.append(defendCard)
                         discardCards.append(defendCard)
                         discardCards.append(attackCard)
                 if forfeit:
@@ -128,5 +143,56 @@ class Player:
                 if card not in self.currentHand:
                     self.currentHand.append(card)
             discardCards.clear()
-            defendHand.clear()
-        return discardCards, defendHand
+        return discardCards
+
+    def defend(self,targets): # need to add defending with same ranking card
+        """Will handle the entire players defend phase, inputs is all the cards being attacked with
+        and the defender must handle all of them"""
+        """Accept targets as a list"""
+        """Return list - discardCards (if 0 means defender accepts all the cards)"""
+        if len(self.currentHand) < len(targets): #Goes against the rules of the game
+            Error("Incorrect amount of targets")
+        discardCards = []
+        forfeit = False
+        if self.AI:
+            Error("AI not yet implemented for defending")
+        else:
+            print("Cards that are currently attacking P" + str(self.playerid) + ":")
+            cardManager.printNon(targets)
+            print("Cards in P" + str(self.playerid) + " hand to defend with:")
+            cardManager.printHand(self.currentHand)
+            for attackCard in targets: # iterate thru all attackers
+                validDefend = False
+                defendCard = 0
+                while validDefend == False and forfeit == False:
+                    print("which card do you want to defend with from:" , end=" ")
+                    cardManager.printNon([attackCard])
+                    defendCard = int(input())
+                    while defendCard not in self.currentHand: # input checking
+                        defendCard = int(input("which card do you want to defend with?"))
+                    # check if defenderCard is larger/ choose new card or give up
+                    validDefend = cardManager.compare(defendCard,attackCard)
+                    if validDefend == False:
+                        print("Failed defense...")
+                        prompt = input("Do you wish to give up defense? (y/n)")
+                        while prompt != "y" and prompt != 'n': # input checking
+                            prompt = input("Do you wish to give up defense? (y/n)")
+                        if prompt == 'y':
+                            forfeit = True
+                            break
+                    else:
+                        print("valid defend!")
+                        self.currentHand.remove(defendCard)
+                        discardCards.append(defendCard)
+                        discardCards.append(attackCard)
+                if forfeit:
+                    break
+        #results handling:
+        if forfeit:
+            for card in discardCards:
+                self.currentHand.append(card)
+            for card in targets:
+                if card not in self.currentHand:
+                    self.currentHand.append(card)
+            discardCards.clear()
+        return discardCards

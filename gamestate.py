@@ -1,16 +1,21 @@
+import random
+from player import Player
+import card as cardManager
+from error import Error
+
 class GameState:
     def __init__(self):
-        self.deck = []
-        self.numPlayers = 2
-        self.attacker = 0
-        self.defender = 1
+        self.deck = [] # contains card currently in deck
+        self.players = [] # instances of players in game, used for attacking and defending; #FIFO format, 0 - attacker, 1 - defender
+        self.trumpSuit = 0 # keep track of the trump suit throughout the game
+        self.gameEnd = False
 
 
-    def rules(self):
+    def rules(self): #need to add settings?
         """Used to print out the rules of the games, will be used to set up the game"""
         prompt = ""
         while prompt != "n":
-            print("============================================================")
+            print("======================Rules: Part 1========================")
             print("Every card has a unique index 0 - 51...")
             print("inputs will ask for the unique card index")
             print("for example: 0 - | 1 ♥ |, the one of Hearts has an id of 0")
@@ -18,7 +23,7 @@ class GameState:
 
         prompt = ""
         while prompt != "n":
-            print("============================================================")
+            print("======================Rules: Part 2========================")
             print("Two players: 1 attacker and 1 defender")
             print("Attackers select a card from hand, may attack with multiple")
             print("of the same rank")
@@ -26,17 +31,124 @@ class GameState:
             print("If defender is successful, the positions are swapped")
             print("If defender is unsuccessful, the attacker may attack again")
             prompt = input("Do you wish to repeat? (y/n): ")
-
+        print("==========================The End==========================")
         return 0
+
+    def nextTurn(self,skip): #need to account for unsuccessful block and defender loses turn
+        """Shift the player buffer and return new attacker and new defender"""
+        if skip:
+            Error("Not yet implemented")
+            return 0, 0
+        else:
+            currentAttacker = self.players.pop(0)
+            self.players.append(currentAttacker)
+            return 0
+
+    def turn(self):
+        """Performs the entire Active Phase"""
+        activePhase = True
+        discardPile = []
+        defendStatus = True
+        while activePhase == True:
+            # if pile is empty: first attack
+            if len(discardPile) == 0:
+                print("=======Player " + str(self.players[0].playerid) +" turn=======")
+                attackCards = self.players[0].attack()
+
+                # other players may join in attack
+
+                # defender blocks
+                print("=======Player " + str(self.players[1].playerid) +" turn=======")
+                discardCards = self.players[1].defend(attackCards)
+                # if defense is successful, attacker may attack again
+                if len(discardCards) != 0:
+                    for card in range(len(discardCards)):
+                        discardPile.append(discardCards[card])
+                else:
+                    activePhase = False
+                    defendStatus = False
+            else:
+                # if attacker may attack with any card within the discardPile - need function of attacking based on discardPile
+                print("=======Player " + str(self.players[0].playerid) +" turn=======")
+                # could add a checker if attacker can play additional cards...
+                validCards = cardManager.check(self.players[0].currentHand, discardPile)
+                if len(validCards) > 0:
+                    print("Attack was blocked, Current avaiable attack-able cards: ")
+                    cardManager.printNon(validCards)
+                    prompt = input("Do you wish to continue your attack? (y/n)")
+                    while prompt != 'y' and prompt != 'n':
+                        prompt = input("Do you wish to continue your attack? (y/n)")
+                    if prompt == 'n':
+                        activePhase = False
+                    else:
+                        attackCards = self.players[0].followUpAttack(validCards)
+                        print("=======Player " + str(self.players[1].playerid) +" turn=======")
+                        discardCards = self.players[1].followUpDefend(attackCards,discardPile)
+                        if len(discardCards) != 0:
+                            print(discardCards)
+                            for card in range(len(discardCards)):
+                                discardPile.append(discardCards[card])
+                        else:
+                            activePhase = False
+                            defendStatus = False
+                else:
+                    activePhase = False
+        # when redrawing, check size of deck
+        for i in range(6):
+            for player in self.players:
+                if len(player.currentHand) < 6:
+                    player.addHand(self.draw)
+
+        return defendStatus
+
+
+    def checkStatus(self):
+        """Check if the game is over"""
+        #check the size of deck and cards in players hand
+        return True
 
     def setupDeck(self):
         """Initialize a list that represent deck of 52 cards with indexs 0 - 51"""
         deck = []
         for i in range(52):
-            deck.append(i)
-        return deck
+            self.deck.append(i)
+        self.trumpSuit = random.randint(0,3)
+
+    def draw(self):
+        """Select a random card from current deck"""
+        try:
+            card = self.deck[random.randint(0,len(self.deck))]
+        except:
+            Error("Error at draw, index:" + str(card))
+        self.deck.remove(card)
+        return card
+
+    def setupPlayer(self): #need to add more player support
+        """Create the number of players in game, need to change for 4 players"""
+        p1 = Player()
+        p1.sendRequest(0)
+        self.players.append(p1)
+        p2 = Player()
+        p2.sendRequest(1)
+        self.players.append(p2)
+
+    def createHand(self):
+        """Initialize players hands, draw up to 6 cards"""
+        player1Hand = [1,14,3,26,15,40]
+        player2Hand = [13,2,30,16,44,38]
+        for i in range(6):
+            # for player in self.players:
+            #     player.addHand(self.draw())
+            self.players[0].addHand(player1Hand[i])
+            self.players[1].addHand(player2Hand[i])
+
+    def printPlayersHands(self): # for debugging
+        """Print current hand of all players"""
+        for player in self.players:
+            cardManager.printNon(player.currentHand)
 
     def run_game(self):
+        """Main game loop, setup deck, initialize players, set trumpSuit, give player hands"""
         print(r"""
         .------..------..------..------..------.
         |D.--. ||U.--. ||R.--. ||A.--. ||K.--. |
@@ -53,6 +165,16 @@ class GameState:
         if prompt == 'y':
             self.rules()
         print("\n\n\n\n\n")
-        print("====================Initializing deck========================")
+        print("===================Initializing Game=======================")
         print("")
-        self.deck = self.setupDeck()
+        # initialize a fresh deck & # initialize the trump suit
+        self.setupDeck()
+        # initialize players & set playid - temp: need to add socket programming within this
+        self.setupPlayer()
+        # create each player's hand
+        self.createHand()
+        while self.gameEnd == False:
+            # Turn
+            # Check status of game
+            self.turn()
+            self.gameEnd = self.checkStatus()

@@ -38,8 +38,24 @@ def compare(cardA,cardB):
         else:
             return False
 
-# printing from list
+def translateRanks(list):
+    output = []
+    for card in list:
+        temp = translateCards(card)
+        output.append(temp['rank'])
+    return output
 
+def check(currentHand, discardPile):
+    """Check if player is able to attack with additional same rank cards
+    return the valid cards that may be attacked with"""
+    playableCards = []
+    discardRanks = translateRanks(discardPile)
+    for card in range(len(currentHand)):
+        if (translateCards(currentHand[card]))['rank'] in discardRanks:
+            playableCards.append(currentHand[card])
+    return playableCards
+
+# printing from list
 def printHand(list):
     """Printing out current hand in a row,"""
     for index in list: #temp: need add class of cards
