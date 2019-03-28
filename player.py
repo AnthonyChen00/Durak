@@ -172,6 +172,10 @@ class Player:
                         defendCard = int(input("which card do you want to defend with?"))
                     # check if defenderCard is larger/ choose new card or give up
                     validDefend = cardManager.compare(defendCard,attackCard)
+                    if validDefend == 'evaded':
+                        print("Perfect block")
+                        self.currentHand.remove(defendCard)
+                        return (['evaded',defendCard] + targets)
                     if validDefend == False:
                         print("Failed defense...")
                         prompt = input("Do you wish to give up defense? (y/n)")

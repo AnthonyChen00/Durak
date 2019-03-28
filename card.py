@@ -24,16 +24,16 @@ def compare(cardA,cardB):
     """return if cardA is higher rank than cardB"""
     card1 = translateCards(cardA)
     card2 = translateCards(cardB)
-    trumpSuit = 0 # temp: need to implement trump suit
-    # check if both are same suit - handles trump suit case
+    trumpSuit = 5 # temp: need to implement trump suit; read trump suit from a setting files?
+    if card1['rank'] == card2['rank']:
+        return 'evaded'
     if card1['suit'] == card2['suit']:
         if card1['rank'] > card2['rank']:
             return True
         else:
             return False
-    # check if cardA is trumpsuit or higher rank
     else:
-        if card1['rank'] > card2['rank'] or card1['suit'] == trumpSuit:
+        if card1['suit'] == trumpSuit:
             return True
         else:
             return False
@@ -54,6 +54,9 @@ def check(currentHand, discardPile):
         if (translateCards(currentHand[card]))['rank'] in discardRanks:
             playableCards.append(currentHand[card])
     return playableCards
+
+def printSymbol(index):
+    return(card_suit_symbol[index])
 
 # printing from list
 def printHand(list):

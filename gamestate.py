@@ -36,9 +36,8 @@ class GameState:
 
     def nextTurn(self,skip): #need to account for unsuccessful block and defender loses turn
         """Shift the player buffer and return new attacker and new defender"""
-        if skip:
-            Error("Not yet implemented")
-            return 0, 0
+        if skip == False:
+            return 0
         else:
             currentAttacker = self.players.pop(0)
             self.players.append(currentAttacker)
@@ -48,31 +47,40 @@ class GameState:
         """Performs the entire Active Phase"""
         activePhase = True
         discardPile = []
+        attackCards = []
         defendStatus = True
+        swapped = False
         while activePhase == True:
             # if pile is empty: first attack
             if len(discardPile) == 0:
-                print("=======Player " + str(self.players[0].playerid) +" turn=======")
-                attackCards = self.players[0].attack()
-
-                # other players may join in attack
+                if swapped == False:
+                    print("=======Player " + str(self.players[0].playerid) +" turn=======")
+                    attackCards = self.players[0].attack()
+                    # other players may join in attack
 
                 # defender blocks
                 print("=======Player " + str(self.players[1].playerid) +" turn=======")
                 discardCards = self.players[1].defend(attackCards)
                 # if defense is successful, attacker may attack again
                 if len(discardCards) != 0:
-                    for card in range(len(discardCards)):
-                        discardPile.append(discardCards[card])
+                    if type(discardCards[0]) == str:
+                        self.nextTurn(True)
+                        discardCards.pop(0)
+                        attackCards = discardCards
+                        print('Perfect Block')
+                        swapped = True
+                    else:
+                        for card in range(len(discardCards)):
+                            discardPile.append(discardCards[card])
                 else:
                     activePhase = False
                     defendStatus = False
             else:
                 # if attacker may attack with any card within the discardPile - need function of attacking based on discardPile
-                print("=======Player " + str(self.players[0].playerid) +" turn=======")
                 # could add a checker if attacker can play additional cards...
                 validCards = cardManager.check(self.players[0].currentHand, discardPile)
                 if len(validCards) > 0:
+                    print("=======Player " + str(self.players[0].playerid) +" turn=======")
                     print("Attack was blocked, Current avaiable attack-able cards: ")
                     cardManager.printNon(validCards)
                     prompt = input("Do you wish to continue your attack? (y/n)")
@@ -97,7 +105,7 @@ class GameState:
         for i in range(6):
             for player in self.players:
                 if len(player.currentHand) < 6:
-                    player.addHand(self.draw)
+                    player.addHand(self.draw())
 
         return defendStatus
 
@@ -105,7 +113,12 @@ class GameState:
     def checkStatus(self):
         """Check if the game is over"""
         #check the size of deck and cards in players hand
-        return True
+        if len(self.deck) == 0:
+            for player in self.players:
+                if len(player.currentHand)== 0:
+                    print("Player P" + str(player.playerid) + "won!")
+                    return True
+        return False
 
     def setupDeck(self):
         """Initialize a list that represent deck of 52 cards with indexs 0 - 51"""
@@ -113,13 +126,15 @@ class GameState:
         for i in range(52):
             self.deck.append(i)
         self.trumpSuit = random.randint(0,3)
+        # print("Trump Suit is: " + cardManager.printSymbol(self.trumpSuit)) // not implemented
+
 
     def draw(self):
         """Select a random card from current deck"""
         try:
-            card = self.deck[random.randint(0,len(self.deck))]
+            card = self.deck[random.randint(0,len(self.deck)-1)]
         except:
-            Error("Error at draw, index:" + str(card))
+            Error("At Draw: ")
         self.deck.remove(card)
         return card
 
@@ -134,8 +149,8 @@ class GameState:
 
     def createHand(self):
         """Initialize players hands, draw up to 6 cards"""
-        player1Hand = [1,14,3,26,15,40]
-        player2Hand = [13,2,30,16,44,38]
+        player1Hand = [1,14,3,16,15,26]
+        player2Hand = [13,2,30,40,44,38]
         for i in range(6):
             # for player in self.players:
             #     player.addHand(self.draw())
@@ -174,7 +189,8 @@ class GameState:
         # create each player's hand
         self.createHand()
         while self.gameEnd == False:
-            # Turn
-            # Check status of game
-            self.turn()
+            defendStatus = self.turn()
+            print("Defend Status: "+ str(defendStatus))
+            print(self.players[0].playerid, self.players[1].playerid)
+            self.nextTurn(defendStatus)
             self.gameEnd = self.checkStatus()
