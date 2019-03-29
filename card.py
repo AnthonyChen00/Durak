@@ -55,6 +55,8 @@ def check(currentHand, discardPile):
             playableCards.append(currentHand[card])
     return playableCards
 
+## need to implement method of checking defense hand and cards going to be played
+
 def printSymbol(index):
     return(card_suit_symbol[index])
 

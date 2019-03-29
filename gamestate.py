@@ -36,9 +36,13 @@ class GameState:
 
     def nextTurn(self,skip): #need to account for unsuccessful block and defender loses turn
         """Shift the player buffer and return new attacker and new defender"""
-        if skip == False:
+        if skip == True:
+            currentAttacker = self.players.pop(0)
+            self.players.append(currentAttacker)
             return 0
         else:
+            currentAttacker = self.players.pop(0)
+            self.players.append(currentAttacker)
             currentAttacker = self.players.pop(0)
             self.players.append(currentAttacker)
             return 0
@@ -57,6 +61,17 @@ class GameState:
                     print("=======Player " + str(self.players[0].playerid) +" turn=======")
                     attackCards = self.players[0].attack()
                     # other players may join in attack
+                    for i in range(2,len(self.players)):
+                        validCards = cardManager.check(self.players[i].currentHand, attackCards)
+                        if len(validCards) > 0:
+                            print("=======Player " + str(self.players[i].playerid) +" turn=======")
+                            print("Do you wish to add to the attack with: ")
+                            cardManager.printNon(validCards)
+                            prompt = ''
+                            while prompt != 'y' and prompt != 'n':
+                                prompt = input("Do you wish to continue your attack? (y/n)")
+                            if prompt == 'y':
+                                attackCards += (self.players[i].followUpAttack(validCards))
 
                 # defender blocks
                 print("=======Player " + str(self.players[1].playerid) +" turn=======")
@@ -65,6 +80,7 @@ class GameState:
                 if len(discardCards) != 0:
                     if type(discardCards[0]) == str:
                         self.nextTurn(True)
+                        self.printPlayerBuffer()
                         discardCards.pop(0)
                         attackCards = discardCards
                         print('Perfect Block')
@@ -87,9 +103,11 @@ class GameState:
                     while prompt != 'y' and prompt != 'n':
                         prompt = input("Do you wish to continue your attack? (y/n)")
                     if prompt == 'n':
+                        # ask other players
                         activePhase = False
                     else:
                         attackCards = self.players[0].followUpAttack(validCards)
+                        ## other people attack as well
                         print("=======Player " + str(self.players[1].playerid) +" turn=======")
                         discardCards = self.players[1].followUpDefend(attackCards,discardPile)
                         if len(discardCards) != 0:
@@ -110,7 +128,7 @@ class GameState:
         return defendStatus
 
 
-    def checkStatus(self):
+    def checkStatus(self): # have not confirm if it works
         """Check if the game is over"""
         #check the size of deck and cards in players hand
         if len(self.deck) == 0:
@@ -146,16 +164,21 @@ class GameState:
         p2 = Player()
         p2.sendRequest(1)
         self.players.append(p2)
+        p3 = Player()
+        p3.sendRequest(2)
+        self.players.append(p3)
+        p4 = Player()
+        p4.sendRequest(3)
+        self.players.append(p4)
+
+    def printPlayerBuffer(self):
+        print(self.players[0].playerid, self.players[1].playerid,self.players[2].playerid, self.players[3].playerid)
+
 
     def createHand(self):
         """Initialize players hands, draw up to 6 cards"""
-        player1Hand = [1,14,3,16,15,26]
-        player2Hand = [13,2,30,40,44,38]
         for i in range(6):
-            # for player in self.players:
-            #     player.addHand(self.draw())
-            self.players[0].addHand(player1Hand[i])
-            self.players[1].addHand(player2Hand[i])
+            for player in self.players:
 
     def printPlayersHands(self): # for debugging
         """Print current hand of all players"""
@@ -191,6 +214,7 @@ class GameState:
         while self.gameEnd == False:
             defendStatus = self.turn()
             print("Defend Status: "+ str(defendStatus))
-            print(self.players[0].playerid, self.players[1].playerid)
+            self.printPlayerBuffer()
+            print("++++++++++++++++++TURN OVER+++++++++++++++++++++++++++++")
             self.nextTurn(defendStatus)
             self.gameEnd = self.checkStatus()
