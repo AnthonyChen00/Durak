@@ -14,7 +14,7 @@ def start_connections(host, port, num_conns):
         print("starting connection", connid, "to", server_addr)
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setblocking(False)
-        sock.connect_ex(server_addr)
+        sock.connect_ex(server_addr) #would return an error if connection failed
         events = selectors.EVENT_READ | selectors.EVENT_WRITE
         data = types.SimpleNamespace(
             connid=connid,

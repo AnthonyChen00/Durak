@@ -10,13 +10,13 @@ def accept_wrapper(sock):
     conn, addr = sock.accept()  # Should be ready to read
     print("accepted connection from", addr)
     conn.setblocking(False)
-    data = types.SimpleNamespace(addr=addr, inb=b"", outb=b"")
-    events = selectors.EVENT_READ | selectors.EVENT_WRITE
-    sel.register(conn, events, data=data)
+    data = types.SimpleNamespace(addr=addr, inb=b"", outb=b"") #simple object with the attributes of: address, inb and outb
+    events = selectors.EVENT_READ | selectors.EVENT_WRITE #want to know when the connection is ready for reading and writing
+    sel.register(conn, events, data=data) #data is an opaque object
 
 
 def service_connection(key, mask):
-    sock = key.fileobj
+    sock = key.fileobj #would be the socket
     data = key.data
     if mask & selectors.EVENT_READ:
         recv_data = sock.recv(1024)  # Should be ready to read
@@ -47,11 +47,12 @@ sel.register(lsock, selectors.EVENT_READ, data=None) #interested in only data th
 
 try:
     while True:
-        events = sel.select(timeout=None)
+        events = sel.select(timeout=None) #blocks until the socket is ready for I/O and returns events
         for key, mask in events:
-            if key.data is None:
+            if key.data is None: #if there is no data, client socket must have been accepted
                 accept_wrapper(key.fileobj)
             else:
+                # print(key,mask)
                 service_connection(key, mask)
 except KeyboardInterrupt:
     print("caught keyboard interrupt, exiting")

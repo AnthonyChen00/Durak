@@ -8,7 +8,6 @@ class Player:
         self.playerid = 0 # player id for attack/defend
         self.currentHand = [] # store current cards in hand
         self.AI = False # future implementations of AI Control
-        self.currentAttacks = [] # temp: store the total current attacks for group attacks
 
     def sendRequest(self,socket):
         """User/client send a request to host, will return the player id"""
