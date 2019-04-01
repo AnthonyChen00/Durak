@@ -1,0 +1,2 @@
+pygame==1.9.4
+venvdotapp==0.1.0
