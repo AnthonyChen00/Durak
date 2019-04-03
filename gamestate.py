@@ -144,7 +144,6 @@ class GameState:
         for i in range(52):
             self.deck.append(i)
         self.trumpSuit = random.randint(0,3)
-                
 
     def draw(self):
         """Select a random card from current deck"""
@@ -166,8 +165,13 @@ class GameState:
 
     def createHand(self):
         """Initialize players hands, draw up to 6 cards"""
+        totalHands = []
+        for player in self.players:
+            totalHands.append([])
         for i in range(6):
-            for player in self.players:
+            for i in range(len(self.players)):
+                totalHands[i].append(self.draw())
+        return totalHands
 
     def printPlayersHands(self): # for debugging
         """Print current hand of all players"""

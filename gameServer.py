@@ -5,6 +5,7 @@ import types
 import card as cardManager
 from player import Player
 from gamestate import GameState
+import random
 
 class Server:
     def __init__(self,port):
@@ -36,18 +37,26 @@ class Server:
         print("Current numbers of connections:", self.currentPlayers)
         if self.currentPlayers == self.numPlayers:
             #begin the turn based
-            self.startGame()
             for player in self.players:
                 #send to all players
                 player.conn.send(b"Starting Game...")
-
+            self.startGame()
+    # def sendAll(self,msg):
+    #     """Send a message to all players"""
 
     def startGame(self):
         """Initialize the deck, trump suit, and player order"""
         #player order is determined by join order, the first player is attacker
         print("Starting deck")
         self.game.setupDeck()
-
+        playerHands = self.game.createHand()
+        trump = "t"+str(random.randint(0,3))
+        for i in range(len(self.players)):
+            playerHand = "d"
+            for j in playerHands[i]:
+                playerHand += "|"
+                playerHand += str(j)
+            self.players[i].conn.send(playerHand.encode("utf-8"))
 
 
 

@@ -3,7 +3,7 @@ import socket
 import selectors
 import types
 from player import Player
-
+import card as cardManager
 
 class Client:
     def __init__(self,port):
@@ -14,7 +14,15 @@ class Client:
 
     def messageParse(self,msg):
         """Packet parser"""
-        print(msg)
+        if msg[0] == 't':
+            self.player.trump = int(msg[1:])
+            print("trump suit is",self.player.trump)
+        if msg[0] == 'd':
+            msg = msg[2:].split("|")
+            msg = cardManager.translateMsg(msg)
+            print("Current Hand:")
+            cardManager.printNon(msg)
+
 
     def startConnection(self):
         server_addr = ('127.0.0.1',int(self.port))

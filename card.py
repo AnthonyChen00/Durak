@@ -60,6 +60,12 @@ def check(currentHand, discardPile):
 def printSymbol(index):
     return(card_suit_symbol[index])
 
+def translateMsg(list):
+    final = []
+    for char in list:
+        final.append(int(char))
+    return final
+
 # printing from list
 def printHand(list):
     """Printing out current hand in a row,"""

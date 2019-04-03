@@ -9,6 +9,7 @@ class Player:
         self.currentHand = [] # store current cards in hand
         self.AI = False # future implementations of AI Control
         self.conn = socket
+        self.trump = 0
 
     def addHand(self,newCard):
         """Adds a card into players hand - used for the drawing functions"""
