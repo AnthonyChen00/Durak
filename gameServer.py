@@ -2,6 +2,9 @@ import sys
 import socket
 import selectors
 import types
+import card as cardManager
+from player import Player
+from gamestate import GameState
 
 class Server:
     def __init__(self,port):
@@ -10,6 +13,7 @@ class Server:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind(('127.0.0.1',int(port)))
         self.socket.listen()
+        self.game = GameState()
         self.sel = selectors.DefaultSelector()
         self.numPlayers = 2
         self.currentPlayers = 0
@@ -20,15 +24,35 @@ class Server:
         conn, addr = socket.accept()
         conn.setblocking(False)
         data = types.SimpleNamespace(addr=addr, inb = b"", outb = b"")
+        ####Selector
         events = selectors.EVENT_READ | selectors.EVENT_WRITE
         self.sel.register(conn,events,data=data)
+        ###gamestate manager
         self.currentPlayers += 1
-        self.players.append(conn)
+        newPlayer = Player(conn)
+        self.players.append(newPlayer) #for socket
+        self.game.addPlayer(newPlayer) #for game functions
+        #
         print("Current numbers of connections:", self.currentPlayers)
-        print(self.currentPlayers)
+        if self.currentPlayers == self.numPlayers:
+            #begin the turn based
+            self.startGame()
+            for player in self.players:
+                #send to all players
+                player.conn.send(b"Starting Game...")
+
+
+    def startGame(self):
+        """Initialize the deck, trump suit, and player order"""
+        #player order is determined by join order, the first player is attacker
+        print("Starting deck")
+        self.game.setupDeck()
+
+
 
 
     def serviceConnection(self,key,mask):
+        """Handle the messages from players"""
         sock = key.fileobj
         data = key.data
         if mask & selectors.EVENT_READ:
@@ -47,8 +71,8 @@ class Server:
                     print("Echoing data...")
                     #send to other players
                     for player in self.players:
-                        if sock != player:
-                            sent = player.send(data.outb)
+                        if sock != player.conn:
+                            sent = player.conn.send(data.outb)
                             data.outb = data.outb[sent:] #fundamental to end the sending process
             else:
                 if data.outb:

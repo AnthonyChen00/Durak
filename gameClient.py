@@ -2,17 +2,19 @@ import sys
 import socket
 import selectors
 import types
+from player import Player
 
-messages = [b"Message 1 from client", b"Message 2 from client."]
 
 class Client:
     def __init__(self,port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sel = selectors.DefaultSelector()
         self.port = port
-        # self.playerID = 0
-        # self.AI = False
-        # self.currentHand = []
+        self.player = Player(self.socket)
+
+    def messageParse(self,msg):
+        """Packet parser"""
+        print(msg)
 
     def startConnection(self):
         server_addr = ('127.0.0.1',int(self.port))
@@ -25,7 +27,6 @@ class Client:
             outb=b"",
         )
         self.sel.register(self.socket, events, data=data)
-        self.socket.send(b"Hello World")
 
     def serviceConnection(self, key, mask):
         sock = key.fileobj
@@ -33,8 +34,8 @@ class Client:
         if mask & selectors.EVENT_READ:
             recv_data = sock.recv(1024)
             if recv_data:
-                print(recv_data.decode("utf-8"))
-                # packet parser
+                self.messageParse(recv_data.decode("utf-8")) # packet parser
+
 
             # if not recv_data or data.recv_total == data.msg_total:
             #     print("Closing connection")
@@ -56,7 +57,6 @@ if __name__ == '__main__':
         if events:
             for key, mask in events:
                 gameClient.serviceConnection(key,mask)
-                gameClient.replyConnection()
         if not gameClient.sel.get_map():
             break
     # except KeyboardInterrupt:

@@ -144,8 +144,7 @@ class GameState:
         for i in range(52):
             self.deck.append(i)
         self.trumpSuit = random.randint(0,3)
-        # print("Trump Suit is: " + cardManager.printSymbol(self.trumpSuit)) // not implemented
-
+                
 
     def draw(self):
         """Select a random card from current deck"""
@@ -156,20 +155,10 @@ class GameState:
         self.deck.remove(card)
         return card
 
-    def setupPlayer(self): #need to add more player support
-        """Create the number of players in game, need to change for 4 players"""
-        p1 = Player()
-        p1.sendRequest(0)
-        self.players.append(p1)
-        p2 = Player()
-        p2.sendRequest(1)
-        self.players.append(p2)
-        p3 = Player()
-        p3.sendRequest(2)
-        self.players.append(p3)
-        p4 = Player()
-        p4.sendRequest(3)
-        self.players.append(p4)
+    def addPlayer(self,player): #need to add more player support
+        """"Adding a new player into the game"""
+        self.players.append(player)
+
 
     def printPlayerBuffer(self):
         print(self.players[0].playerid, self.players[1].playerid,self.players[2].playerid, self.players[3].playerid)

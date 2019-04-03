@@ -3,16 +3,12 @@ from error import Error
 import card as cardManager
 
 class Player:
-    def __init__(self):
+    def __init__(self,socket):
         """Constructor for player"""
         self.playerid = 0 # player id for attack/defend
         self.currentHand = [] # store current cards in hand
         self.AI = False # future implementations of AI Control
-
-    def sendRequest(self,socket):
-        """User/client send a request to host, will return the player id"""
-        self.playerid = socket # temp: will update for socket programming
-
+        self.conn = socket
 
     def addHand(self,newCard):
         """Adds a card into players hand - used for the drawing functions"""
